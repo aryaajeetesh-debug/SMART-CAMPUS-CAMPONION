@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smart Campus Companion</title>
+<meta property="og:title" content="Smart Campus Companion">
+<meta property="og:site_name" content="Smart Campus Companion">
+<meta property="og:description" content="Ask about classes, exams, fees, library, hostel, placements and campus directions.">
+<meta name="description" content="Ask about classes, exams, fees, library, hostel, placements and campus directions.">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1ec;--panel:#fff;--ink:#12261f;--mute:#5d6b64;--line:#d3dad4;--pine:#14342b;--sign:#f5c400;--signink:#2a2200;--bot:#e3ebe5;--me:#14342b;--meink:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1914;--panel:#13241d;--ink:#e8efe9;--mute:#98a89f;--line:#264136;--pine:#0a1612;--bot:#1b3128;--me:#f5c400;--meink:#2a2200;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1914;--panel:#13241d;--ink:#e8efe9;--mute:#98a89f;--line:#264136;--pine:#0a1612;--bot:#1b3128;--me:#f5c400;--meink:#2a2200;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*{box-sizing:border-box}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,Segoe UI,sans-serif;font-size:16px;line-height:1.5}
+.app{display:grid;grid-template-columns:300px 1fr;height:100%;max-width:1180px;margin:0 auto}
+aside{background:var(--pine);color:#e8efe9;padding:22px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:18px}
+.brand{display:flex;gap:12px;align-items:center}
+.sign{background:var(--sign);color:var(--signink);font-weight:800;border-radius:6px;padding:6px 10px;font-size:20px;line-height:1}
+.brand b{font-size:19px;font-weight:800;line-height:1.1}
+aside h2{font-size:15px;font-weight:600;margin:0 0 8px;color:#b9c9bf}
+.blist{display:flex;flex-direction:column;gap:6px}
+.bld{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;background:rgba(255,255,255,.07);border:0;color:inherit;font:inherit;text-align:left;padding:8px;border-radius:8px;cursor:pointer}
+.bld:hover,.bld:focus-visible{background:rgba(255,255,255,.16);outline:2px solid var(--sign)}
+.bld i{font-style:normal;background:var(--sign);color:var(--signink);font-weight:800;border-radius:4px;text-align:center;padding:3px 0;font-size:14px}
+.bld span{font-size:14px;line-height:1.25}.bld small{display:block;color:#a9bbb0;font-size:12px}
+.pipe{font-size:12.5px;color:#a9bbb0;border-top:1px solid rgba(255,255,255,.15);padding-top:12px}
+main{display:flex;flex-direction:column;min-width:0;height:100%;background:var(--bg)}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel)}
+header.top strong{font-weight:600}
+header.top small{color:var(--mute);display:block}
+.tools{display:flex;gap:8px}
+.tools button{background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 10px;font:inherit;font-size:14px;cursor:pointer}
+#log{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:min(620px,88%);padding:11px 14px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.bot{background:var(--bot);border-top-left-radius:4px;align-self:flex-start}
+.msg.me{background:var(--me);color:var(--meink);border-top-right-radius:4px;align-self:flex-end}
+.msg h4{margin:0 0 4px;font-size:16px}
+.route{margin:8px 0 0;padding:0;list-style:none;border-left:3px solid var(--sign);}
+.route li{padding:3px 0 3px 12px;font-size:15px}
+.meta{margin-top:8px;font-size:12px;color:var(--mute);white-space:normal}
+.meta button{background:none;border:0;color:inherit;text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+.trace{display:none;margin-top:6px;font-size:12px;font-family:ui-monospace,monospace;color:var(--mute);white-space:pre-wrap}
+.trace.on{display:block}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font:inherit;font-size:14px;cursor:pointer}
+.chip:hover,.chip:focus-visible{border-color:var(--sign);outline:2px solid var(--sign)}
+table{border-collapse:collapse;margin-top:6px;font-size:14px;width:100%}
+td{padding:4px 8px 4px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.compose{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line);background:var(--panel)}
+.compose input{flex:1;min-width:0;font:inherit;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.compose button{font:inherit;font-weight:600;background:var(--sign);color:var(--signink);border:0;border-radius:10px;padding:0 20px;cursor:pointer}
+input:focus-visible,button:focus-visible{outline:2px solid var(--sign);outline-offset:1px}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);padding:0;width:min(720px,94vw);max-height:90vh;font:inherit}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+dialog button{font:inherit;cursor:pointer;border:1px solid var(--line);background:none;color:var(--ink);border-radius:8px;padding:6px 10px}
+dialog .pri,dialog .tab.on{background:var(--sign);color:var(--signink);border-color:var(--sign);font-weight:600}
+dialog .pri{margin-top:10px}
+dialog input,dialog select,dialog textarea{width:100%;font:inherit;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.edh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;padding:10px 18px 0}
+#edbody{padding:12px 18px;overflow:auto;max-height:56vh}
+.edf{display:flex;gap:12px;align-items:center;padding:12px 18px;border-top:1px solid var(--line);color:var(--mute);font-size:13px}
+.et{width:100%}.et td,.et th{border:0;padding:3px 4px 3px 0;text-align:left;font-size:13px;color:var(--mute);font-weight:400}
+.fm{display:grid;gap:10px;margin:10px 0}.fm label,.lb{display:grid;gap:4px;font-size:14px;color:var(--mute)}
+#edmsg{margin-left:8px;font-size:14px;color:var(--mute)}
+#login{position:fixed;inset:0;display:grid;place-items:center;background:var(--pine);padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));z-index:50;overflow:auto}
+#login[hidden]{display:none}
+.locked .app{display:none}
+.lcard{background:var(--panel);color:var(--ink);border-radius:16px;padding:26px;width:min(380px,100%);display:grid;gap:14px}
+.lcard label{display:grid;gap:4px;font-size:14px;color:var(--mute)}
+.lcard input:not([type=checkbox]){font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.lcard .chk{display:flex;gap:8px;align-items:center}
+.ltabs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ltabs button{font:inherit;padding:8px;border:1px solid var(--line);background:none;color:var(--ink);border-radius:8px;cursor:pointer}
+.ltabs button.on{background:var(--sign);color:var(--signink);border-color:var(--sign);font-weight:600}
+.lgo{font:inherit;font-weight:600;background:var(--sign);color:var(--signink);border:0;border-radius:10px;padding:11px;cursor:pointer}
+#lerr{color:#d9503f;font-size:14px;min-height:20px}
+.lnote{margin:0;font-size:12.5px;color:var(--mute)}
+#who{font-size:13px;color:var(--mute);align-self:center}
+#sched{padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel);max-height:44vh;overflow:auto}
+#sched[hidden]{display:none}
+.sbar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.sbar label{display:grid;gap:3px;font-size:12px;color:var(--mute)}
+.sbar select{font:inherit;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);min-width:0}
+.stab{width:100%;margin-top:6px}.stab td{padding:6px 8px 6px 0}.now td{font-weight:600}
+.tag{background:var(--sign);color:var(--signink);border-radius:4px;padding:1px 6px;font-size:11px;margin-left:6px}
+@media (max-width:760px){.sbar{grid-template-columns:1fr 1fr}}
+@media (max-width:760px){.app{grid-template-columns:1fr;grid-template-rows:auto 1fr}aside{padding:12px;flex-direction:row;overflow-x:auto;overflow-y:hidden;gap:10px}aside>div:first-child,.pipe{display:none}aside h2{display:none}.blist{flex-direction:row}.bld{min-width:170px}main{min-height:0}.msg{max-width:94%}}
+@media (prefers-reduced-motion:no-preference){.msg{animation:in .18s ease-out}@keyframes in{from{opacity:0;transform:translateY(4px)}}}
+</style>
+</head>
+<body class="locked">
+<div id="login"><div class="lcard"><div class="brand"><span class="sign">SC</span><b>Smart Campus<br>Companion</b></div>
+<div class="ltabs"><button id="tabS" class="on">Student</button><button id="tabA">Administrator</button></div>
+<label>Username<input id="lu" autocomplete="username" placeholder="Student ID (e.g. cs2101)"></label>
+<label><span id="lpl">Enrollment number</span><input id="lp" type="password" autocomplete="current-password"></label>
+<label class="chk"><input type="checkbox" id="showpw"> Show password</label>
+<button id="lgo" class="lgo">Sign in</button><div id="lerr" role="alert"></div>
+<p class="lnote">Students sign in with their username and college enrollment number. Only administrators can edit campus data.</p></div></div>
+<div class="app">
+<aside>
+ <div class="brand"><span class="sign">SC</span><b>Smart Campus<br>Companion</b></div>
+ <div><h2>Find a building</h2><div class="blist" id="blist"></div></div>
+ <div class="pipe">Pipeline: tokenise → stem → synonym expand → TF‑IDF intent score → typo‑tolerant entity match → templated reply. Sample data only.</div>
+</aside>
+<main>
+ <header class="top"><div><strong>Ask about classes, exams, library, fees, hostel or directions</strong><small id="clock"></small></div>
+ <div class="tools"><span id="who"></span><button id="schbtn" hidden>My schedule</button><button id="edbtn" hidden>Edit data</button><button id="lo">Sign out</button><button id="trbtn" title="Show how each reply was understood">Show NLP trace</button><button id="clr">Clear</button></div></header>
+<div id="sched" hidden><div class="sbar"><label>Branch<select id="sb"></select></label><label>Year<select id="sy"></select></label><label>Semester<select id="ss"></select></label><label>Day<select id="sd"></select></label></div><div id="sinfo" class="lnote" style="margin-top:8px"></div><div id="stable"></div></div>
+ <div id="log" role="log" aria-live="polite"></div>
+ <div class="compose"><input id="q" autocomplete="off" placeholder="e.g. how do I get from the main gate to the library?" aria-label="Your question"><button id="go">Ask</button></div>
+</main>
+</div>
+<dialog id="ed" aria-label="Edit campus data"><div class="edh"><strong>Edit campus data</strong><button id="edx">Close</button></div><div class="tabs" id="tabs"></div><div id="edbody"></div><div class="edf"><button id="edreset">Reset to sample data</button><span>Changes save in this browser and update answers right away.</span></div></dialog>
+<script>
+/* ---------- Sample campus knowledge base ---------- */
+const B={
+ admin:{code:"A",name:"Administration Block",hours:"9:00–17:00, Mon–Sat",desc:"Fees, ID cards, certificates, registrar.",route:["Enter through Gate 1","Walk straight 150 m along Central Avenue","The Administration Block is on your left, behind the flagpole"],syn:["admin","administration","registrar","office"]},
+ library:{code:"L",name:"Central Library",hours:"8:00–22:00 (24 h during exams)",desc:"Books, journals, silent study floors, group rooms.",route:["Enter through Gate 1","Walk 150 m to the Central Avenue roundabout","Turn right; the Library is the glass building after 100 m"],syn:["library","books","reading","librarian"]},
+ science:{code:"S",name:"Science Block",hours:"8:30–18:00",desc:"Physics, Chemistry and Biology labs.",route:["From the roundabout take the left path","Pass the Cafeteria","Science Block is the red-brick building at the end"],syn:["science","lab","labs","physics","chemistry","biology"]},
+ eng:{code:"E",name:"Engineering Block",hours:"8:00–20:00",desc:"CSE, ECE and Mechanical departments, computer labs.",route:["Enter through Gate 2","Walk straight 200 m","Engineering Block is the tall building facing the parking lot"],syn:["engineering","cse","computer","ece","mechanical","department","dept"]},
+ cafe:{code:"C",name:"Cafeteria",hours:"7:30–21:00",desc:"Meals, snacks, tea and coffee.",route:["From the roundabout take the left path","The Cafeteria is the first building on the right"],syn:["cafeteria","canteen","food","mess","eat","lunch","coffee"]},
+ hostel:{code:"H",name:"Hostel Complex",hours:"Gate closes 22:30",desc:"Blocks H1–H4, warden office, laundry.",route:["Enter through Gate 3 (east)","Follow the tree-lined road for 300 m","Hostel blocks are past the Sports Complex"],syn:["hostel","dorm","warden","room","accommodation"]},
+ sports:{code:"P",name:"Sports Complex",hours:"6:00–20:00",desc:"Ground, indoor courts, gym.",route:["Enter through Gate 3 (east)","Sports Complex is the first large ground on the left"],syn:["sports","gym","ground","cricket","football","badminton"]},
+ audi:{code:"T",name:"Auditorium",hours:"Event based",desc:"Seminars, fests and convocation.",route:["From Gate 1 walk to the roundabout","Go straight past the Library","Auditorium is the domed building ahead"],syn:["auditorium","seminar","hall"]},
+ health:{code:"M",name:"Health Centre",hours:"9:00–17:00; emergency 24 h",desc:"Doctor, first aid, ambulance.",route:["Behind the Administration Block","Follow the green cross signs"],syn:["health","doctor","medical","clinic","hospital","ambulance"]},
+ placement:{code:"PL",name:"Placement Cell",hours:"9:30–17:30, Mon–Sat",desc:"Campus recruitment, internships, résumé reviews and mock interviews.",route:["Enter through Gate 1 and walk 150 m along Central Avenue","Go into the Administration Block on your left","Take the stairs to the first floor; the Placement Cell is at the end of the corridor"],syn:["placement","placements","recruitment","recruiter","internship","internships"]},
+ exam:{code:"EX",name:"Examination Cell",hours:"10:00–17:00, Mon–Sat",desc:"Hall tickets, result queries, re-evaluation forms and exam schedules.",route:["Enter through Gate 1 and walk to the Administration Block","Go in and turn to the right wing","The Examination Cell is on the ground floor, room A-05"],syn:["examination","exam","exams","controller","coe"]},
+ principal:{code:"PR",name:"Principal’s Office",hours:"10:00–16:00, Mon–Fri",desc:"Principal, director and dean offices. Book appointments at the front desk.",route:["Enter through Gate 1 and walk 150 m along Central Avenue","Go into the Administration Block","Take the stairs to the second floor; the Principal’s Office is straight ahead"],syn:["principal","principals","director","dean"]},
+ cc:{code:"CC",name:"Computer Centre",hours:"8:30–20:00",desc:"Open-access computers, IT desk, Wi-Fi and portal support.",route:["Enter through Gate 2 and walk 100 m","The Computer Centre is the single-storey building beside the Engineering Block","The IT desk is at the entrance"],syn:["computercentre","itdesk","datacentre","computer","centre","center"]},
+ workshop:{code:"WS",name:"Mechanical Workshop",hours:"8:30–17:00",desc:"Machine shop, welding, foundry and fabrication labs.",route:["Enter through Gate 2 and walk 250 m past the Engineering Block","Turn left at the parking area","The Workshop is the large shed with the green roof"],syn:["workshop","machine","foundry","welding","fabrication","mechanical"]},
+ bank:{code:"BK",name:"Bank and ATM",hours:"10:00–16:00 (ATM 24 h)",desc:"Bank branch and ATMs on campus.",route:["Enter through Gate 1","Walk 100 m; the bank is on your right, opposite the roundabout","The ATMs are at the entrance"],syn:["bank","atm","cash","money"]},
+ stationery:{code:"ST",name:"Stationery and Photocopy",hours:"9:00–19:00",desc:"Notebooks, printouts, photocopying and project binding.",route:["From the Library walk 50 m towards the Cafeteria","The shop is beside the Cafeteria entrance"],syn:["stationery","photocopy","xerox","print","printout","printing","binding","notebook"]},
+ bus:{code:"BS",name:"Bus Stop and Transport Office",hours:"6:30–19:30",desc:"College buses, route timings and bus passes.",route:["Enter through Gate 1","The bus stop is just outside the gate, on the left","The Transport Office is the small cabin beside it"],syn:["bus","buses","transport","shuttle","busstop"]},
+ parking:{code:"PK",name:"Parking",hours:"6:00–21:00",desc:"Two-wheeler and four-wheeler parking with security.",route:["Enter through Gate 2","Parking is on your right just after the gate","The student two-wheeler bay is near the Engineering Block"],syn:["parking","park","bike","vehicle","scooter"]},
+ counsel:{code:"CS",name:"Counselling Centre",hours:"10:00–17:00, Mon–Fri",desc:"Student counselling and wellbeing support.",route:["Go to the Health Centre behind the Administration Block","The Counselling Centre is in the same building, on the first floor","Walk-ins are welcome; you can also book at the front desk"],syn:["counselling","counseling","counsellor","wellness","mental","stress","centre","center"]},
+ security:{code:"SC",name:"Security Office",hours:"24 hours",desc:"Lost and found, visitor passes and emergencies.",route:["At Gate 1, on the left of the main entrance","Staffed day and night"],syn:["security","guard","visitor","lost","found"]}
+};
+const BR=["CSE","ECE","ME"],DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const BRN={CSE:"Computer Science (CSE)",ECE:"Electronics (ECE)",ME:"Mechanical (ME)"};
+const COMMON=["Engineering Maths I,Engineering Physics,Programming in C,Basic Electrical Engineering,Communication Skills","Engineering Maths II,Engineering Chemistry,Data Structures Basics,Engineering Graphics,Environmental Science"];
+const BS={
+CSE:["Discrete Maths,Object Oriented Programming,Computer Organization,Database Systems,Python Lab","Algorithms,Operating Systems,Theory of Computation,Software Engineering,Statistics","Computer Networks,Compiler Design,Machine Learning,Web Technologies,NLP Basics","Artificial Intelligence,Cloud Computing,UI UX Design,Information Security,Mini Project","Deep Learning,Big Data Analytics,Internet of Things,Elective I,Major Project I","Elective II,Professional Ethics,Entrepreneurship,Major Project II,Seminar"],
+ECE:["Signals and Systems,Analog Circuits,Network Theory,Digital Electronics,Electronics Lab","Analog Communication,Microprocessors,Electromagnetic Theory,Control Systems,Linear ICs","Digital Communication,VLSI Design,Digital Signal Processing,Antenna Theory,Embedded Systems","Wireless Communication,Microwave Engineering,Optical Communication,Information Theory,Mini Project","Satellite Communication,Radar Systems,Elective I,IoT Systems,Major Project I","Elective II,Professional Ethics,Entrepreneurship,Major Project II,Seminar"],
+ME:["Thermodynamics,Fluid Mechanics,Strength of Materials,Manufacturing Processes,Workshop Lab","Kinematics of Machines,Heat Transfer,Material Science,Metrology,Applied Maths","Dynamics of Machines,Machine Design I,IC Engines,Industrial Engineering,Thermal Lab","Machine Design II,Refrigeration and AC,CAD CAM,Operations Research,Mini Project","Automobile Engineering,Robotics,Elective I,Finite Element Methods,Major Project I","Elective II,Professional Ethics,Entrepreneurship,Major Project II,Seminar"]};
+const SLOTS=["09:00–10:00","10:00–11:00","11:30–12:30","14:00–15:00"];
+function genTT(){const t={};BR.forEach(b=>{for(let sm=1;sm<=8;sm++){
+ const subs=(sm<3?COMMON[sm-1]:BS[b][sm-3]).split(","),o={};
+ DAYS.forEach((d,di)=>{o[d]=di<5?SLOTS.map((tm,p)=>{const i=(di+p*2)%5,n=subs[i],lab=/Lab|Project|Seminar|Workshop/.test(n);return[tm,n,lab?(b==="ME"?"M-Lab ":"E-Lab ")+(i%3+1):(b==="ME"?"M-":"E-")+(Math.ceil(sm/2)*100+i*7+1)]}):di===5?[["10:00–11:00","Mentoring and Activities","Dept Hall"],["11:30–12:30","Club and Sports","Ground"]]:[]});
+ t[b+"|"+sm]=o}});return t}
+const TT=genTT();
+const EXAMS=[["Data Structures","Nov 18","10:00","Hall B"],["Operating Systems","Nov 21","10:00","Hall A"],["Discrete Maths","Nov 25","14:00","Hall B"],["Algorithms","Nov 28","10:00","Hall C"]];
+const EVENTS=[["Hack the Campus (24 h hackathon)","Nov 8–9","Engineering Block"],["Placement Prep Workshop","Nov 12","Auditorium"],["Inter‑department Football","Nov 14","Sports Complex"],["Open Mic Night","Nov 15","Cafeteria lawn"]];
+const FEES=[["Tuition (semester)","₹62,500","Nov 30"],["Hostel (semester)","₹28,000","Nov 30"],["Exam fee","₹1,800","Nov 10"]];
+
+/* ---------- NLP engine ---------- */
+const STOP=new Set("a an the is are am to of in on at for from do does did i me my we you it and or can could would should please tell show what whats when where how which about any there this that be get have has with your us".split(" "));
+const SYN={timetable:["schedule","routine","class","classes","lecture","lectures","period","periods","timing"],exam:["exams","test","tests","midterm","finals","datesheet","assessment","paper"],
+fee:["fees","payment","pay","tuition","dues","challan","scholarship","receipt"],event:["events","fest","festival","hackathon","workshop","club","seminar"],
+hostel:["dorm","warden","laundry","mess"],library:["book","books","borrow","issue","return","journal","reading"],
+route:["direction","directions","navigate","reach","path","way","located","location","find","map"],
+wifi:["internet","network","password","vpn","portal","login","email","erp"],health:["doctor","sick","ill","medical","ambulance","emergency"],
+placement:["job","jobs","internship","internships","recruit","recruiter","resume","career"]};
+const INTENTS={
+ timetable:{k:{timetable:3,class:2,lecture:2,schedule:3,today:1,tomorrow:1,lab:1,period:2,timing:1,week:1}},
+ exam:{k:{exam:3,test:2,datesheet:3,hall:1,final:2,midterm:2,assessment:1,paper:1,seat:2}},
+ library:{k:{library:3,book:3,borrow:3,issue:2,journal:2,return:2,fine:2,librarian:2,reading:1}},
+ fee:{k:{fee:3,payment:3,tuition:2,due:2,scholarship:2,receipt:2,challan:2,pay:2}},
+ hostel:{k:{hostel:3,warden:3,laundry:2,mess:2,room:1,curfew:3,dorm:3}},
+ event:{k:{event:3,fest:3,hackathon:3,workshop:2,club:2,seminar:2,happening:2,upcoming:1}},
+ route:{k:{route:3,direction:3,reach:2,navigate:3,gate:2,building:1,where:2,block:1,way:2,located:2,find:1}},
+ wifi:{k:{wifi:3,internet:3,network:2,password:2,vpn:2,erp:3,portal:3,login:2,email:1}},
+ health:{k:{health:3,doctor:3,medical:3,ambulance:3,emergency:3,sick:3,ill:2,clinic:3}},
+ placement:{k:{placement:3,job:3,internship:3,recruit:3,resume:2,career:2,company:1}},
+ hours:{k:{open:3,close:3,hour:3,timing:2,time:1,till:1}},
+ greet:{k:{hi:3,hello:3,hey:3,morning:1,afternoon:1,evening:1,namaste:3}},
+ thanks:{k:{thanks:3,thank:3,great:1,awesome:1,cool:1,ok:0.5}},
+ help:{k:{help:3,can:0,features:3,able:1,use:1}}
+};
+const canon={};Object.entries(SYN).forEach(([c,l])=>l.forEach(w=>canon[w]=c));
+function stem(w){return w.replace(/(ing|edly|ed|es|s)$/,m=>w.length>4?"":m)}
+function tokens(t){return t.toLowerCase().replace(/[^a-z0-9\s'‑-]/g," ").split(/\s+/).filter(w=>w&&!STOP.has(w)).map(w=>{const s=stem(w);return canon[w]||canon[s]||s})}
+function lev(a,b){if(Math.abs(a.length-b.length)>2)return 9;const d=Array.from({length:a.length+1},(_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;
+ for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]==b[j-1]?0:1));return d[a.length][b.length]}
+/* IDF: rarer keywords across intents weigh more */
+const df={};Object.values(INTENTS).forEach(i=>Object.keys(i.k).forEach(w=>df[w]=(df[w]||0)+1));
+const N=Object.keys(INTENTS).length,idf=w=>Math.log(1+N/(df[w]||1));
+function classify(raw){
+ const tk=tokens(raw),scores={},hits={};
+ for(const [name,{k}] of Object.entries(INTENTS)){let s=0;hits[name]=[];
+  for(const t of tk){let w=k[t],via=t;
+   if(w===undefined&&t.length>3){for(const kw in k){if(lev(t,kw)<=1){w=k[kw]*.8;via=t+"≈"+kw;break}}}
+   if(w){s+=w*idf(t in k?t:via.split("≈")[1]);hits[name].push(via)}}
+  scores[name]=s}
+ const rank=Object.entries(scores).sort((a,b)=>b[1]-a[1]);const [top,ts]=rank[0],sum=rank.reduce((a,[,v])=>a+v,0)||1;
+ return{tk,top:ts>0?top:null,conf:ts/sum,second:rank[1][1]>0?rank[1][0]:null,hits:hits[top],ts}}
+function findBuilding(raw){
+ const tk=raw.toLowerCase().replace(/[^a-z\s]/g," ").split(/\s+/);let best=null,bs=0;
+ for(const [id,b] of Object.entries(B)){let n=0;for(const w of tk){if(!w)continue;if(b.syn.includes(w)||(w.length>4&&b.syn.some(x=>x.length>4&&lev(w,x)<=1)))n++}if(n>bs){bs=n;best=id}}
+ return best}
+function findDay(raw){const l=raw.toLowerCase();const days=["sun","mon","tue","wed","thu","fri","sat"];
+ if(/tomorrow/.test(l))return days[(new Date().getDay()+1)%7][0].toUpperCase()+days[(new Date().getDay()+1)%7].slice(1);
+ for(const d of days)if(new RegExp("\\b"+d).test(l))return d[0].toUpperCase()+d.slice(1);
+ return days[new Date().getDay()][0].toUpperCase()+days[new Date().getDay()].slice(1)}
+
+/* ---------- Responders: return {title, body, route?, chips?} ---------- */
+const tbl=r=>"<table>"+r.map(x=>"<tr>"+x.map(c=>"<td>"+esc(c)+"</td>").join("")+"</tr>").join("")+"</table>";
+const R={
+ timetable(q){const d=findDay(q),pf=user&&user.p?user.p:"CSE|3",l=(TT[pf]||{})[d]||[];return{title:"Classes on "+d+" ("+pf.replace("|"," sem ")+")",html:l.length?tbl(l):"No classes scheduled. Enjoy the free day.",chips:["Where is E‑204?","Exam dates"]}},
+ exam(){return{title:"Upcoming exams",html:tbl(EXAMS)+"<br>Carry your ID card and hall ticket. Hall tickets unlock on the portal 5 days before each exam.",chips:["Where is Hall B?","Fee deadlines"]}},
+ library(q){const l=q.toLowerCase();let t="Loan period is 14 days for books and 3 days for reference items. Renew twice online. Fine: ₹2 per day.";
+  if(/fine/.test(l))t="Overdue fine is ₹2 per day per book. Pay it at the library desk or on the portal.";
+  return{title:"Central Library",html:t+"<br>Open "+B.library.hours+".",chips:["Directions to the library","Library hours"]}},
+ fee(){return{title:"Fee schedule",html:tbl(FEES)+"<br>Pay on the student portal or at the Administration Block. Late fee: ₹100 per day.",chips:["Where is the Administration Block?"]}},
+ hostel(){return{title:"Hostel desk",html:"Warden office: Hostel Complex, ground floor, 9:00–18:00. Curfew 22:30. Laundry runs Tue, Thu and Sat. Room change requests go through the warden with a form from the Administration Block.",chips:["Directions to the hostel"]}},
+ event(){return{title:"Coming up on campus",html:tbl(EVENTS),chips:["Directions to the Auditorium"]}},
+ wifi(){return{title:"Campus Wi‑Fi and portals",html:"Connect to <b>CampusNet</b>, then sign in with your roll number and portal password. Forgot it? Use “Reset password” on the portal or visit the IT desk in the Engineering Block, room E‑001.",chips:["Where is the Engineering Block?"]}},
+ health(){return{title:"Health Centre",html:"Doctor on duty 9:00–17:00. For emergencies call campus security at <b>100‑CAMPUS (ext. 100)</b> any time. An ambulance is stationed at Gate 1.",route:B.health.route}},
+ placement(){return{title:"Placement cell",html:"Placement cell is on the first floor of the Administration Block. Next workshop: Placement Prep on Nov 12 in the Auditorium. Upload your résumé to the portal by Nov 10.",chips:["Directions to the Placement Cell","Upcoming events"]}},
+ greet(){return{title:"Hi"+(user?" "+esc(user.name.split(" ")[0]):"")+", I’m your campus companion.",html:"Ask me about classes, exams, fees, the library, hostel, events or how to get around.",chips:["Today’s classes","Exam dates","Fee deadlines","Upcoming events","Directions to the library"]}},
+ thanks(){return{title:"Happy to help.",html:"Ask anything else about campus whenever you need."}},
+ help(){return R.greet()}
+};
+function building(id){const b=B[id];return{title:esc(b.name)+" ("+esc(b.code)+")",html:esc(b.desc)+"<br>Hours: "+esc(b.hours)+".<br>From the gate:",route:b.route,chips:["Hostel directions","Library hours"]}}
+function answer(q){
+ const c=classify(q),bid=findBuilding(q);let out,intent=c.top;
+ if(c.top==="hours"&&bid){out={title:esc(B[bid].name)+" hours",html:esc(B[bid].hours)}}
+ else if(bid&&(!c.top||/where|direction|reach|get to|way to|route|find|located/i.test(q)||["route","hours"].includes(c.top)||c.top==="library"&&/where|direction|reach|way|find/i.test(q)||c.conf<.9&&c.top!=="timetable"&&c.top!=="exam")){out=building(bid);intent="route+"+bid}
+ else if(c.top&&R[c.top]&&c.top!=="hours"&&c.top!=="route"){out=R[c.top](q)}
+ else if(c.top==="route"){out={title:"Which building?",html:"I can guide you to any of these:",chips:Object.values(B).map(b=>b.name)}}
+ else if(bid){out=building(bid);intent="entity:"+bid}
+ else{out={title:"I didn’t catch that.",html:"Try asking about classes, exams, fees, the library, hostel, events, Wi‑Fi or a building name.",chips:["Today’s classes","Exam dates","Directions to the library"]};intent="fallback"}
+ out.trace="tokens: ["+c.tk.join(", ")+"]\nintent: "+intent+"  confidence: "+Math.round(c.conf*100)+"%\nmatched: "+(c.hits.join(", ")||"none")+(bid?"\nentity: "+B[bid].name:"");
+ return out}
+
+/* ---------- UI ---------- */
+const log=document.getElementById("log"),q=document.getElementById("q");let showTrace=false,hist=[];
+function add(cls,html){const d=document.createElement("div");d.className="msg "+cls;d.innerHTML=html;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
+function say(o){
+ let h="<h4>"+o.title+"</h4>"+(o.html||"");
+ if(o.route)h+='<ul class="route">'+o.route.map(s=>"<li>"+esc(s)+"</li>").join("")+"</ul>";
+ h+='<div class="trace'+(showTrace?" on":"")+'">'+o.trace.replace(/</g,"&lt;")+"</div>";
+ const m=add("bot",h);
+ if(o.chips){const c=document.createElement("div");c.className="chips";o.chips.forEach(t=>{const b=document.createElement("button");b.className="chip";b.textContent=t;b.onclick=()=>ask(t);c.appendChild(b)});m.appendChild(c)}}
+function ask(t){t=t.trim();if(!t)return;add("me",t.replace(/</g,"&lt;"));q.value="";hist.push(t);save();
+ setTimeout(()=>{const a=answer(t);if(!a.trace)a.trace="";say(a)},180)}
+function save(){try{localStorage.setItem("scc-hist",JSON.stringify(hist.slice(-20)))}catch(e){}}
+document.getElementById("go").onclick=()=>ask(q.value);
+q.addEventListener("keydown",e=>{if(e.key==="Enter")ask(q.value)});
+document.getElementById("trbtn").onclick=e=>{showTrace=!showTrace;e.target.textContent=showTrace?"Hide NLP trace":"Show NLP trace";document.querySelectorAll(".trace").forEach(t=>t.classList.toggle("on",showTrace))};
+document.getElementById("clr").onclick=()=>{log.innerHTML="";hist=[];save();start()};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const DEF=JSON.stringify({B,TT,EXAMS,EVENTS,FEES});
+function apply(d){
+ for(const k in B)delete B[k];Object.assign(B,d.B);
+ if(Object.keys(d.TT||{}).some(k=>k.includes("|"))){for(const k in TT)delete TT[k];Object.assign(TT,d.TT)}
+ EXAMS.splice(0,EXAMS.length,...d.EXAMS);EVENTS.splice(0,EVENTS.length,...d.EVENTS);FEES.splice(0,FEES.length,...d.FEES)}
+function persist(){try{localStorage.setItem("scc-data",JSON.stringify({B,TT,EXAMS,EVENTS,FEES,v:2}))}catch(e){}}
+try{const sv=localStorage.getItem("scc-data");if(sv){const d0=JSON.parse(sv);apply(d0);if(d0.v!==2){const df=JSON.parse(DEF).B;for(const k in df)if(!(k in B))B[k]=df[k];persist()}}}catch(e){}
+const bl=document.getElementById("blist");
+function renderSide(){bl.innerHTML="";Object.values(B).forEach(b=>{const x=document.createElement("button");x.className="bld";x.innerHTML="<i>"+esc(b.code)+"</i><span>"+esc(b.name)+"<small>"+esc(b.hours)+"</small></span>";x.onclick=()=>ask("How do I get to the "+b.name+"?");bl.appendChild(x)})}
+renderSide();
+function tick(){document.getElementById("clock").textContent=new Date().toLocaleString([],{weekday:"long",hour:"numeric",minute:"2-digit",day:"numeric",month:"short"})}
+tick();setInterval(tick,30000);
+/* ---------- Data editor ---------- */
+const ed=document.getElementById("ed"),eb=document.getElementById("edbody"),tabsEl=document.getElementById("tabs"),NL=String.fromCharCode(10);
+const LISTS={exams:{t:"Exams",a:EXAMS,c:["Subject","Date","Time","Hall"]},events:{t:"Events",a:EVENTS,c:["Event","Date","Venue"]},fees:{t:"Fees",a:FEES,c:["Item","Amount","Due date"]}};
+let tab="buildings",day="Mon",sel=null;
+function drawTabs(){const t=[["buildings","Buildings"],["timetable","Timetable"],["students","Students"]].concat(Object.entries(LISTS).map(([k,v])=>[k,v.t]));
+ tabsEl.innerHTML="";t.forEach(([k,n])=>{const b=document.createElement("button");b.textContent=n;b.className="tab"+(k===tab?" on":"");b.onclick=()=>{tab=k;draw()};tabsEl.appendChild(b)})}
+function draw(){drawTabs();eb.innerHTML='<div id="edtop"></div><div id="edlist"></div>';
+ if(tab==="buildings")bldUI();else if(tab==="timetable")ttUI();else if(tab==="students")stUI();else{const l=LISTS[tab];listUI(l.a,l.c)}}
+function listUI(arr,cols){
+ const L=document.getElementById("edlist");
+ let h='<table class="et"><tr>'+cols.map(c=>"<th>"+c+"</th>").join("")+"<th></th></tr>";
+ arr.forEach((r,i)=>{h+="<tr>"+cols.map((c,j)=>'<td><input data-r="'+i+'" data-c="'+j+'" value="'+esc(r[j]||"")+'" aria-label="'+c+'"></td>').join("")+'<td><button data-del="'+i+'" aria-label="Delete row">✕</button></td></tr>'});
+ h+='</table><button id="addrow" class="pri">Add row</button>';
+ L.innerHTML=h;
+ L.querySelectorAll("input").forEach(i=>i.oninput=()=>{arr[+i.dataset.r][+i.dataset.c]=i.value;persist()});
+ L.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{arr.splice(+b.dataset.del,1);persist();listUI(arr,cols)});
+ document.getElementById("addrow").onclick=()=>{arr.push(cols.map(()=>""));persist();listUI(arr,cols)}}
+let tb="CSE",ts=3;
+function ttUI(){
+ const opt=(a,v)=>a.map(x=>"<option"+(String(x)===String(v)?" selected":"")+">"+x+"</option>").join("");
+ document.getElementById("edtop").innerHTML='<div class="fm" style="grid-template-columns:repeat(3,1fr)"><label>Branch<select id="tb">'+opt(BR,tb)+'</select></label><label>Semester<select id="ts">'+opt([1,2,3,4,5,6,7,8],ts)+'</select></label><label>Day<select id="dsel">'+opt(DAYS,day)+'</select></label></div>';
+ ["tb","ts","dsel"].forEach(i=>document.getElementById(i).onchange=()=>{tb=document.getElementById("tb").value;ts=+document.getElementById("ts").value;day=document.getElementById("dsel").value;ttUI()});
+ const k=tb+"|"+ts;TT[k]=TT[k]||{};TT[k][day]=TT[k][day]||[];listUI(TT[k][day],["Time","Subject","Room"])}
+function bldUI(){
+ if(sel!=="new"&&!B[sel])sel=Object.keys(B)[0]||"new";
+ const b=sel==="new"?{code:"",name:"",hours:"",desc:"",route:[],syn:[]}:B[sel];
+ document.getElementById("edtop").innerHTML='<label class="lb">Building<select id="bsel">'+Object.entries(B).map(([i,x])=>'<option value="'+i+'"'+(i===sel?" selected":"")+">"+esc(x.name)+"</option>").join("")+'<option value="new"'+(sel==="new"?" selected":"")+">+ Add new building</option></select></label>";
+ document.getElementById("bsel").onchange=e=>{sel=e.target.value;bldUI()};
+ const L=document.getElementById("edlist");
+ L.innerHTML='<div class="fm"><label>Name<input id="f_name" value="'+esc(b.name)+'"></label><label>Short code (1–2 letters)<input id="f_code" maxlength="2" value="'+esc(b.code)+'"></label><label>Opening hours<input id="f_hours" value="'+esc(b.hours)+'"></label><label>What’s inside<input id="f_desc" value="'+esc(b.desc)+'"></label><label>Directions, one step per line<textarea id="f_route" rows="4">'+esc(b.route.join(NL))+'</textarea></label><label>Search words, comma separated<input id="f_kw" value="'+esc(b.syn.join(", "))+'"></label></div><button class="pri" id="bsave">Save building</button> '+(sel==="new"?"":'<button id="bdel">Delete building</button>')+'<span id="edmsg" role="status"></span>';
+ const g=id=>document.getElementById(id),msg=t=>g("edmsg").textContent=t;
+ g("bsave").onclick=()=>{
+  const nm=g("f_name").value.trim();if(!nm){msg("Enter a building name.");return}
+  const id=sel==="new"?"b"+Date.now():sel;
+  const syn=[...new Set((nm+" "+g("f_kw").value.split(",").join(" ")).toLowerCase().split(/[^a-z0-9]+/).filter(w=>w.length>2&&!["the","and","block"].includes(w)))];
+  B[id]={code:g("f_code").value.trim()||nm.slice(0,2).toUpperCase(),name:nm,hours:g("f_hours").value.trim(),desc:g("f_desc").value.trim(),route:g("f_route").value.split(NL).map(x=>x.trim()).filter(Boolean),syn};
+  sel=id;persist();renderSide();bldUI();document.getElementById("edmsg").textContent="Saved."};
+ if(g("bdel"))g("bdel").onclick=()=>{delete B[sel];sel=null;persist();renderSide();bldUI();document.getElementById("edmsg").textContent="Deleted."}}
+function saveSt(id,u){let d={add:{},del:[]};try{d=JSON.parse(localStorage.getItem("scc-students"))||d}catch(e){}
+ if(u){d.add[id]=u;d.del=d.del.filter(x=>x!==id)}else{delete d.add[id];if(!d.del.includes(id))d.del.push(id)}
+ try{localStorage.setItem("scc-students",JSON.stringify(d))}catch(e){}}
+function stUI(){
+ const Lx=document.getElementById("edlist"),g=id=>document.getElementById(id);
+ const rows=Object.entries(USERS).filter(([i,u])=>u.r==="student");
+ const cls=p=>{const a=(p||"CSE|1").split("|");return a[0]+" · Year "+Math.ceil(+a[1]/2)+" · Sem "+a[1]};
+ const op=a=>a.map(x=>'<option value="'+x+'">'+x+"</option>").join("");
+ Lx.innerHTML='<p class="lnote">Students sign in with their username and college enrollment number as the password. Enrollment numbers are stored as hashes and cannot be shown again; add the student again to change one.</p><table class="et"><tr><th>Name</th><th>Username</th><th>Class</th><th></th></tr>'+rows.map(([i,u])=>"<tr><td>"+esc(u.n)+"</td><td>"+esc(i)+"</td><td>"+esc(cls(u.p))+'</td><td><button data-rm="'+esc(i)+'">Remove</button></td></tr>').join("")+'</table><div class="fm"><label>Student name<input id="s_n"></label><label>Username (e.g. cs2105)<input id="s_u"></label><label>College enrollment number (their password)<input id="s_e"></label><label>Branch<select id="s_b">'+op(BR)+'</select></label><label>Year<select id="s_y">'+op([1,2,3,4])+'</select></label><label>Semester<select id="s_s"></select></label></div><button class="pri" id="s_add">Add / update student</button><span id="edmsg" role="status"></span>';
+ const semFill=()=>{const y=+g("s_y").value;g("s_s").innerHTML=op([2*y-1,2*y])};semFill();g("s_y").onchange=semFill;
+ Lx.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{const i=b.dataset.rm;delete USERS[i];saveSt(i,null);stUI()});
+ g("s_add").onclick=async()=>{
+  const n=g("s_n").value.trim(),id=g("s_u").value.trim().toLowerCase(),en=g("s_e").value.trim().toUpperCase(),m=t=>{g("edmsg").textContent=t};
+  if(!n||!/^[a-z0-9_.-]{3,20}$/.test(id)||en.length<4){m("Enter a name, a username (3–20 letters or digits) and an enrollment number.");return}
+  if(id==="college"||(USERS[id]&&USERS[id].r!=="student")){m("That username is reserved.");return}
+  const u={n,r:"student",p:g("s_b").value+"|"+g("s_s").value,h:await sha("scc-v1:"+id+":"+en)};USERS[id]=u;saveSt(id,u);stUI();g("edmsg").textContent="Saved "+n+"."}}
+document.getElementById("edbtn").onclick=()=>{if(!user||user.role!=="admin")return;draw();ed.showModal()};
+document.getElementById("edx").onclick=()=>ed.close();
+document.getElementById("edreset").onclick=()=>{apply(JSON.parse(DEF));persist();renderSide();sel=null;draw()};
+function start(){const g=R.greet();g.trace="";say(g)}
+const $=id=>document.getElementById(id);
+const todayName=()=>["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][new Date().getDay()];
+function fillSel(id,arr,val,f){$(id).innerHTML=arr.map(x=>'<option value="'+x+'">'+(f?f(x):x)+"</option>").join("");$(id).value=String(val)}
+function semOpts(y,sel){fillSel("ss",[2*y-1,2*y],sel,x=>"Semester "+x)}
+function tmin(t){const m=String(t).trim().split(":");return(+m[0])*60+(+m[1]||0)}
+function renderSched(){
+ const b=$("sb").value,sm=+$("ss").value,d=$("sd").value,list=(TT[b+"|"+sm]||{})[d]||[];
+ const now=new Date(),mins=now.getHours()*60+now.getMinutes();let ni=-1,xi=-1;
+ if(d===todayName())list.forEach((r,i)=>{const pr=String(r[0]).split("–"),st=tmin(pr[0]),en=pr[1]?tmin(pr[1]):st+60;if(mins>=st&&mins<en)ni=i;else if(st>mins&&xi<0)xi=i});
+ $("sinfo").textContent=b+" · Year "+Math.ceil(sm/2)+" · Semester "+sm+" · "+d+(list.length?" · "+list.length+" classes":"");
+ $("stable").innerHTML=list.length?'<table class="stab">'+list.map((r,i)=>"<tr"+(i===ni?' class="now"':"")+"><td>"+esc(r[0])+"</td><td>"+esc(r[1])+(i===ni?'<span class="tag">Now</span>':(i===xi&&ni<0?'<span class="tag">Next</span>':""))+"</td><td>"+esc(r[2])+"</td></tr>").join("")+"</table>":'<p class="lnote" style="margin-top:10px">No classes on '+d+".</p>"}
+function showSched(p){const a=(p||"CSE|1").split("|"),sm=+a[1]||1,y=Math.ceil(sm/2);
+ fillSel("sb",BR,a[0],x=>BRN[x]);fillSel("sy",[1,2,3,4],y,x=>"Year "+x);semOpts(y,sm);fillSel("sd",DAYS,todayName());
+ $("sched").hidden=false;$("schbtn").hidden=false;renderSched()}
+function hideSched(){$("sched").hidden=true;$("schbtn").hidden=true}
+$("sy").onchange=()=>{semOpts(+$("sy").value,2*(+$("sy").value)-1);renderSched()};
+["sb","ss","sd"].forEach(i=>$(i).onchange=renderSched);
+$("schbtn").onclick=()=>{$("sched").hidden=!$("sched").hidden};
+var user=null;
+const USERS={cs2101:{n:"Aarav Sharma",r:"student",p:"CSE|3",h:"4cdb7fa43a3964e2278ea0a0de30c4d193b9cda06452abbfc20466523515ca27"},cs2102:{n:"Priya Verma",r:"student",p:"CSE|5",h:"f435377921b239f3b5e7038d11d00bdb65c505ee221ed5ca62047d6ee1256d9b"},ec2103:{n:"Rohan Singh",r:"student",p:"ECE|4",h:"3dd556a5f81183dcb7ab00fb7808d558db2363e73f09fbfa12debc1fe43a1aec"},me2104:{n:"Ananya Patel",r:"student",p:"ME|2",h:"588609ada02e93b0d780c51397b873ccb573399ed4c2235f37df364c9135108d"},college:{n:"Campus Admin",r:"admin",h:"dde43fbc547fe1c5551bcc2cc9b91f6444f80c391840b7692454904e263249c0"}};
+try{const d=JSON.parse(localStorage.getItem("scc-students"));if(d){(d.del||[]).forEach(i=>{if(USERS[i]&&USERS[i].r==="student")delete USERS[i]});Object.entries(d.add||{}).forEach(([i,u])=>{if(u&&u.r==="student"&&!(USERS[i]&&USERS[i].r==="admin"))USERS[i]=u})}}catch(e){}
+const sha=async t=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t)))].map(b=>b.toString(16).padStart(2,"0")).join("");
+let role="student",fails=0,lockUntil=0;
+const L=id=>document.getElementById(id);
+function setRole(r){role=r;L("tabS").classList.toggle("on",r==="student");L("tabA").classList.toggle("on",r==="admin");L("lu").placeholder=r==="admin"?"College name (username)":"Student ID (e.g. cs2101)";L("lpl").textContent=r==="admin"?"Password":"Enrollment number";L("lerr").textContent=""}
+L("tabS").onclick=()=>setRole("student");L("tabA").onclick=()=>setRole("admin");
+function enter(id){const u=USERS[id];user={id,name:u.n,role:u.r,p:u.p};document.body.classList.remove("locked");L("login").hidden=true;L("who").textContent=u.n+" · "+(u.r==="admin"?"Administrator":"Student");L("edbtn").hidden=u.r!=="admin";if(u.r==="student")showSched(u.p);else hideSched();log.innerHTML="";start()}
+async function signIn(){
+ const err=m=>{L("lerr").textContent=m},now=Date.now();
+ if(now<lockUntil){err("Too many attempts. Try again in "+Math.ceil((lockUntil-now)/1000)+" s.");return}
+ const id=L("lu").value.trim().toLowerCase(),pw=L("lp").value,u=USERS[id];
+ if(!id||!pw){err("Enter your username and password.");return}
+ let ok=false;try{const pwn=u&&u.r==="student"?pw.trim().toUpperCase():pw;ok=!!u&&(await sha("scc-v1:"+id+":"+pwn))===u.h}catch(e){err("Sign-in needs a secure (https) page.");return}
+ if(!ok){fails++;if(fails>=5){lockUntil=now+30000;fails=0;err("Too many attempts. Locked for 30 s.")}else err("Wrong username or password.");return}
+ if(u.r!==role){err("This is "+(u.r==="admin"?"an administrator":"a student")+" account. Use the "+(u.r==="admin"?"Administrator":"Student")+" tab.");return}
+ fails=0;L("lp").value="";L("lerr").textContent="";enter(id)}
+L("lgo").onclick=signIn;
+L("lp").addEventListener("keydown",e=>{if(e.key==="Enter")signIn()});
+L("lu").addEventListener("keydown",e=>{if(e.key==="Enter")L("lp").focus()});
+L("showpw").onchange=e=>{L("lp").type=e.target.checked?"text":"password"};
+L("lo").onclick=()=>{user=null;if(ed.open)ed.close();log.innerHTML="";hideSched();L("edbtn").hidden=true;L("who").textContent="";L("lu").value="";document.body.classList.add("locked");L("login").hidden=false;L("lu").focus()};
+L("lu").focus();
+</script>
+</body>
+</html>
